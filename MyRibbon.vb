@@ -2,6 +2,7 @@
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Windows.Media
+Imports ExcelDna.Integration
 Imports ExcelDna.Integration.CustomUI
 Imports GetRangeProperties.My.Resources
 
@@ -31,9 +32,11 @@ Public Class MyRibbon
     Public Sub OnAction(ctl As IRibbonControl)
         Select Case ctl.Id
             Case "btnPerf"
-                DemoCode.StartDemo()
+                ' We need these QueueAsMacro calls to support the C API
+                ExcelAsyncUtil.QueueAsMacro(Sub() DemoCode.LoadWorkbook())
+                ExcelAsyncUtil.QueueAsMacro(Sub() DemoCode.StartDemo())
             Case Else
-                MsgBox("You clicked " + ctl.Id)
+        MsgBox("You clicked " + ctl.Id)
         End Select
     End Sub
 
