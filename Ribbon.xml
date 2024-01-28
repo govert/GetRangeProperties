@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="OnLoad">
+  <ribbon>
+    <tabs>
+      <tab idMso="TabAddIns">
+        <group id="grpPerf"
+               getLabel="getLabel">
+
+          <button id="btnPerf"
+                  getLabel="getLabel"
+                  getImage="getImage"
+                  onAction="OnAction"
+                  size="large"
+                  visible="true" />
+
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+
