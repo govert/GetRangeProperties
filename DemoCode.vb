@@ -1,14 +1,11 @@
-﻿Imports System.Diagnostics
-Imports System.Runtime.InteropServices
-Imports System.Windows.Media.Media3D
-Imports ExcelDna.Integration
+﻿Imports ExcelDna.Integration
 Imports ExcelDna.Integration.XlCall
 Imports Microsoft.Office.Interop.Excel
 
 <HideModuleName>
 Module MyGlobals
     ' Public ReadOnly xl As Application = Globals.ThisAddIn.Application
-    Public ReadOnly xl As Application = ExcelDna.Integration.ExcelDnaUtil.Application
+    Public ReadOnly xl As Application = ExcelDnaUtil.Application
 End Module
 
 Module DemoCode
@@ -39,16 +36,18 @@ Module DemoCode
             Debug.Print(fmls)
             msg &= $"{bold}{vbLf}{fmls}{vbLf}"
         Next
+
         'Now repeat for NET
-        'For Each addr In addrArray
-        '    xl.StatusBar = $"NET Bold for {addr}..." ' & If(addr = addrArray(2), " Patience! This will take 1 minute or so!", "")
-        '    Dim bold = NetBold(addr)
-        '    Debug.Print(bold)
-        '    xl.StatusBar = $"NET Formulas for {addr}..." ' & If(addr = addrArray(2), " Patience! This will take 1 minute or so!", "")
-        '    Dim fmls = NetFmls(addr)
-        '    Debug.Print(fmls)
-        '    msg &= $"{bold}{vbLf}{fmls}{vbLf}"
-        'Next
+        For Each addr In addrArray
+            xl.StatusBar = $"NET Bold for {addr}..." & If(addr = addrArray(2), " Patience! This will take 1 minute or so!", "")
+            Dim bold = NetBold(addr)
+            Debug.Print(bold)
+            xl.StatusBar = $"NET Formulas for {addr}..." & If(addr = addrArray(2), " Patience! This will take 1 minute or so!", "")
+            Dim fmls = NetFmls(addr)
+            Debug.Print(fmls)
+            msg &= $"{bold}{vbLf}{fmls}{vbLf}"
+        Next
+
         'Now repeat for API
         For Each addr In addrArray
             xl.StatusBar = $"API Bold for {addr}..."
@@ -79,15 +78,19 @@ Module DemoCode
             If wkb Is Nothing Then
                 Dim path As String
 
-                Dim assy = Reflection.Assembly.GetExecutingAssembly
-                Dim aPath = IO.Path.Combine(assy.Location, wkbName)
-                Dim bPath = IO.Path.Combine(IO.Path.GetDirectoryName(New Uri(assy.CodeBase).LocalPath), wkbName)
+                path = IO.Path.Combine(IO.Path.GetDirectoryName(ExcelDnaUtil.XllPath), wkbName)
 
-                If IO.File.Exists(aPath) Then
-                    path = aPath
-                ElseIf IO.File.Exists(bPath) Then
-                    path = bPath
-                Else
+                ' Some of these can be problematic under .NET Framework
+                'Dim assy = Reflection.Assembly.GetExecutingAssembly
+                'Dim aPath = IO.Path.Combine(assy.Location, wkbName)
+                'Dim bPath = IO.Path.Combine(IO.Path.GetDirectoryName(New Uri(assy.CodeBase).LocalPath), wkbName)
+
+                'If IO.File.Exists(aPath) Then
+                ' path = aPath
+                'ElseIf IO.File.Exists(bPath) Then
+                ' path = bPath
+                'End If
+                If Not IO.File.Exists(path) Then
                     MsgBox("Problem locating the content workbook")
                     Return
                 End If
@@ -191,7 +194,6 @@ Module DemoCode
     Function GetHasFormula(rng As Range) As Boolean(,)
         Dim col As Range
         Dim cel As Range
-        Dim hasFormula
         Dim rows As Integer = rng.Rows.Count
         Dim cols As Integer = rng.Columns.Count
         Dim ret(rows, cols) As Boolean
@@ -258,7 +260,7 @@ Module DemoCode
 
     Function GetHasFormulaApi(xlRef As ExcelReference) As Boolean(,)
         Dim cellRef As ExcelReference
-        Dim formula As String
+        ' Dim formula As String
         Dim hasFormula As Boolean
 
         Dim rows = xlRef.RowLast - xlRef.RowFirst + 1

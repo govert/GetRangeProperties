@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <RootNamespace>GetRangeProperties</RootNamespace>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ExcelDna.AddIn" Version="*-*" />
-    <PackageReference Include="ExcelDna.Interop" Version="*-*" />
+    <PackageReference Include="ExcelDna.AddIn" Version="1.7.0" />
+    <PackageReference Include="ExcelDna.Interop" Version="15.0.1" />
   </ItemGroup>
 
   <ItemGroup>
